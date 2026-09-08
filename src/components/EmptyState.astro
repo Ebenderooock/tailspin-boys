@@ -1,5 +1,12 @@
 ---
+/*
+ * Empty-state component for pages and lists with no available content.
+ *
+ * Renders either caller-provided text or custom slotted content inside a
+ * consistent bordered panel.
+ */
 interface Props {
+    /** Optional message to display when no custom slotted content is provided. */
     text?: string;
 }
 
@@ -8,10 +15,10 @@ const { text } = Astro.props;
 
 <div
     data-testid="empty-state"
-    class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700"
+    class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 high-contrast:!border-2 high-contrast:!border-yellow-300 high-contrast:!bg-black"
 >
     {text ? (
-        <p data-testid="empty-state-text" class="text-slate-300">{text}</p>
+        <p data-testid="empty-state-text" class="text-slate-300 high-contrast:!text-white">{text}</p>
     ) : (
         <slot />
     )}

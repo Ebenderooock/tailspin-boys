@@ -1,4 +1,10 @@
 ---
+/*
+ * Compact metadata tag component.
+ *
+ * Displays game category and publisher labels with color themes that remain
+ * readable in high-contrast mode.
+ */
 import type { HTMLAttributes } from 'astro/types';
 
 interface Props extends Omit<HTMLAttributes<'span'>, 'color'> {
@@ -9,8 +15,8 @@ interface Props extends Omit<HTMLAttributes<'span'>, 'color'> {
 const { color = 'blue', class: className, ...rest } = Astro.props;
 
 const colors: Record<NonNullable<Props['color']>, string> = {
-    blue: 'bg-blue-900/60 text-blue-300',
-    purple: 'bg-purple-900/60 text-purple-300',
+    blue: 'bg-blue-900/60 text-blue-300 high-contrast:!border high-contrast:!border-yellow-300 high-contrast:!bg-black high-contrast:!text-yellow-300',
+    purple: 'bg-purple-900/60 text-purple-300 high-contrast:!border high-contrast:!border-yellow-300 high-contrast:!bg-black high-contrast:!text-yellow-300',
 };
 ---
 
