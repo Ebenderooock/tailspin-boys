@@ -1,1 +1,43 @@
+/*
+ * Global Tailwind CSS entrypoint and project-level variants.
+ *
+ * Defines the high-contrast rules used when the persisted preference class is
+ * present on the document element.
+ */
 @import "tailwindcss";
+
+@layer components {
+  .high-contrast body {
+    @apply !bg-black !text-white !transition-none;
+  }
+
+  .high-contrast header {
+    @apply !border-b-2 !border-yellow-300 !bg-black !text-white !transition-none;
+  }
+
+  .high-contrast nav,
+  .high-contrast [data-testid="game-card"],
+  .high-contrast [data-testid="empty-state"] {
+    @apply !border-2 !border-yellow-300 !bg-black !text-white !transition-none;
+  }
+
+  .high-contrast [data-testid="site-brand"],
+  .high-contrast [data-testid="game-rating"],
+  .high-contrast [data-testid="game-category"],
+  .high-contrast [data-testid="game-publisher"],
+  .high-contrast [data-testid="game-card-cta"] {
+    @apply !text-yellow-300;
+  }
+
+  .high-contrast [data-testid="game-title"],
+  .high-contrast [data-testid="game-description"],
+  .high-contrast [data-testid="page-hero-title"],
+  .high-contrast [data-testid="page-hero-subtitle"],
+  .high-contrast [data-testid="empty-state-text"] {
+    @apply !text-white;
+  }
+
+  .high-contrast [data-testid="high-contrast-toggle"] {
+    @apply !border-yellow-300 !bg-yellow-300 !text-black !transition-none;
+  }
+}

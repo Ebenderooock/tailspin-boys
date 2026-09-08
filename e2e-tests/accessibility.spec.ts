@@ -1,3 +1,9 @@
+/*
+ * End-to-end accessibility checks for the built static site.
+ *
+ * These tests combine automated axe scans with focused keyboard, semantic,
+ * contrast, and persisted preference behavior checks.
+ */
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
@@ -219,5 +225,60 @@ test.describe('Accessibility Tests', () => {
     for (let i = 0; i < count; i++) {
       await expect(gameCardSvgs.nth(i)).toHaveAttribute('aria-hidden', 'true');
     }
+  });
+
+  test('high-contrast mode toggle should expose state and persist across reloads', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('[data-testid="games-grid"]', { timeout: 10000 });
+
+    const toggle = page.getByRole('button', { name: /high contrast/i });
+
+    await test.step('Enable high-contrast mode', async () => {
+      await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+      await toggle.click();
+      await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.locator('html')).toHaveClass(/high-contrast/);
+      await expect(toggle).toHaveText('High contrast: on');
+    });
+
+    await test.step('Reload and verify the preference is restored', async () => {
+      await page.reload();
+      await expect(page.locator('html')).toHaveClass(/high-contrast/);
+      await expect(page.getByRole('button', { name: /high contrast/i })).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    await test.step('Disable high-contrast mode', async () => {
+      await page.getByRole('button', { name: /high contrast/i }).click();
+      await expect(page.locator('html')).not.toHaveClass(/high-contrast/);
+      await expect(page.getByRole('button', { name: /high contrast/i })).toHaveAttribute('aria-pressed', 'false');
+    });
+  });
+
+  test('high-contrast mode should keep key catalog surfaces readable', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('[data-testid="games-grid"]', { timeout: 10000 });
+
+    await page.getByRole('button', { name: /high contrast/i }).click();
+    await expect(page.locator('html')).toHaveClass(/high-contrast/);
+
+    const headerColors = await page.getByRole('banner').evaluate((element) => {
+      const styles = window.getComputedStyle(element);
+      return { backgroundColor: styles.backgroundColor, color: styles.color };
+    });
+    const cardColors = await page.getByTestId('game-card').first().evaluate((element) => {
+      const styles = window.getComputedStyle(element);
+      return {
+        backgroundColor: styles.backgroundColor,
+        borderTopStyle: styles.borderTopStyle,
+        borderTopWidth: styles.borderTopWidth,
+        color: styles.color,
+      };
+    });
+
+    expect(headerColors).toEqual({ backgroundColor: 'rgb(0, 0, 0)', color: 'rgb(255, 255, 255)' });
+    expect(cardColors.backgroundColor).toBe('rgb(0, 0, 0)');
+    expect(cardColors.borderTopStyle).toBe('solid');
+    expect(cardColors.borderTopWidth).toBe('2px');
+    expect(cardColors.color).toBe('rgb(255, 255, 255)');
   });
 });

@@ -1,4 +1,10 @@
 ---
+/*
+ * Shared panel component for grouped content.
+ *
+ * Provides a consistent rounded, bordered container that can render as the
+ * semantic element selected by the caller.
+ */
 import type { HTMLAttributes } from 'astro/types';
 
 interface Props extends HTMLAttributes<'div'> {
@@ -10,6 +16,6 @@ const { as = 'div', class: className, ...rest } = Astro.props;
 const Element = as;
 ---
 
-<Element class:list={['bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl', className]} {...rest}>
+<Element class:list={['bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl high-contrast:!border-2 high-contrast:!border-yellow-300 high-contrast:!bg-black', className]} {...rest}>
     <slot />
 </Element>
